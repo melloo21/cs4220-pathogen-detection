@@ -1,2 +1,5 @@
-test_data/
-training_data/
+.DS_Store
+/test_data/**
+/training_data/**
+/new_env/**
+training_data/** */
