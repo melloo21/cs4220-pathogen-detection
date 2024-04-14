@@ -198,3 +198,39 @@ def get_all_jaccard_index_with_transformation( model:Any, label_encoder:Any , x_
         all_true.append(true_pathogen)
 
     return all_jaccard_index, flatten(all_pred), flatten(all_true)
+
+def get_all_jaccard_index_with_filter( model:Any, label_encoder:Any , filtered_idx:Any, num_patients:int=10, threshold:float=0.95):
+
+    all_jaccard_index = []
+    all_pred = []
+    all_true = []
+    for patient_id in range(num_patients):
+        print('predicting for patient {}'.format(patient_id))
+
+        with open('test_data/patient{}_6mers.npy'.format(patient_id), 'rb') as read_file:
+            df_test = np.load(read_file)
+
+        # regr.predict relies on argmax, thus predict to every single read and you will end up with many false positives
+        transformed_data = filtered_array(df_test,filtered_idx)
+        print(f"Shape of {transformed_data.shape}")
+        y_pred = model.predict(transformed_data)
+
+        # we can use regr.predict_proba to find a good threshold and predict only for case where the model is confident.
+        # here I apply 0.95 as the cutoff for my predictions, let's see how well my model will behave...
+        y_predprob = model.predict_proba(transformed_data)
+
+        # we get only predictions larger than the threshold and if there is more than one, we take the argmax again
+        final_predictions = label_encoder.inverse_transform(
+                                np.unique([np.argmax(item) for item in y_predprob if len(np.where(item >= threshold)[0]) >= 1]
+                            ))
+
+        # my pathogens dectected, decoy will be ignored
+        final_predictions = [item for item in final_predictions if item !='decoy']
+
+        ji, pred_pathogen, true_pathogen = jaccard_index_per_patient(patient_id, final_predictions)
+        print('Jaccard index: {}'.format(ji))
+        all_jaccard_index.append(ji)    
+        all_pred.append(pred_pathogen)
+        all_true.append(true_pathogen)
+
+    return all_jaccard_index, flatten(all_pred), flatten(all_true)
