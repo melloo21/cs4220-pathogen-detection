@@ -37,8 +37,8 @@ def read_canonical_kmer_dict(filepath="./training_data/6-mers.json"):
     with open(filepath, 'r') as dict_file:
         return json.load(dict_file)
 
-def create_sampling_idx(df, sample_num:int):
-    return df.groupby('labels').sample(sample_num).index
+def create_sampling_idx(df, sample_num:int, replace:bool=False, random_state:int=40):
+    return df.groupby('labels').sample(sample_num, replace=replace,random_state =random_state).index
 
 def sequence_to_kmer_profile(sequence : str, k : int = 6):
     # We define a utility function here that turns sequences to their 6-mer profiles.
