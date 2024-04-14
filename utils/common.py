@@ -1,4 +1,6 @@
 import json
+import pickle
+from typing import Union
 import pandas as pd
 from sklearn import preprocessing
 
@@ -16,7 +18,6 @@ def create_coarse_labels(df):
     df['labels'] = y_index
     print(f"Unique labels {len(df['coarse_species_name'].unique())}")
     return df, le
-
 
 def create_label_df(df):
     # This is required for dataset function
@@ -37,7 +38,7 @@ def read_canonical_kmer_dict(filepath="./training_data/6-mers.json"):
         return json.load(dict_file)
 
 def create_sampling_idx(df, sample_num:int):
-    return df.groupby('labels').sample(500).index
+    return df.groupby('labels').sample(sample_num).index
 
 def sequence_to_kmer_profile(sequence : str, k : int = 6):
     # We define a utility function here that turns sequences to their 6-mer profiles.
@@ -58,3 +59,19 @@ def sequence_to_kmer_profile(sequence : str, k : int = 6):
 
     res /= np.sum(res)
     return res
+
+def save_file(transform_scale, filename:str, filepath:Union[str,None]):
+    # saves transform_scale
+    if ".pkl" not in filename:
+        filename = f"{filename}.pkl"
+    if filepath:
+        filename = f"{filepath}/{filename}"
+    pickle.dump(transform_scale, open(filename,"wb"))
+
+def open_file(filename:str, filepath:Union[str,None]):
+    if ".pkl" not in filename:
+        filename = f"{filename}.pkl"
+    if filepath:
+        filename = f"{filepath}/{filename}"
+    # Return transform_scale
+    return pickle.load(open(filename,'rb'))

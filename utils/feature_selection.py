@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 
 def random_forest_selector(X,y):

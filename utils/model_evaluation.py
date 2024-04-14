@@ -176,7 +176,7 @@ def get_all_jaccard_index_with_transformation( model:Any, label_encoder:Any , x_
             df_test = np.load(read_file)
 
         # regr.predict relies on argmax, thus predict to every single read and you will end up with many false positives
-        transformed_data =x_transformer.fit_transform(df_test)
+        transformed_data =x_transformer.transform(df_test)
         y_pred = model.predict(transformed_data)
 
         # we can use regr.predict_proba to find a good threshold and predict only for case where the model is confident.
