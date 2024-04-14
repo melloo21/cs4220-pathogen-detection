@@ -1,8 +1,11 @@
-from sklearn.ensemble import RandomForestRegressor
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 def random_forest_selector(X,y):
     # Using feature importance to select features
-    model = RandomForestRegressor(random_state=1, max_depth=10)
+    model = RandomForestClassifier(random_state=1, max_depth=10)
     model.fit(X,y)
     features = X.columns
     importances = model.feature_importances_
@@ -63,3 +66,10 @@ def get_std_across_labels_by_kmer(kmer_analysis):
     std_accross_labels_sorted = dict(sorted(std_accross_labels.items(), key=lambda item: item[1]))
 
     return std_accross_labels_sorted
+
+
+def return_filter_idx(df, filter_namelist):
+    return df.X_mapped.columns.get_indexer(filter_namelist)
+
+def filtered_array(array, idx_to_drop):
+    return np.take(array, idx_to_drop, axis=1)
