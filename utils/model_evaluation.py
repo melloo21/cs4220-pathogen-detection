@@ -108,6 +108,9 @@ def plot_auc_roc(
     plt.xlabel('False Positive Rate')
     plt.show()
 
+def filtered_array(array, idx_to_drop):
+    return np.take(array, idx_to_drop, axis=1)
+
 def jaccard_index_per_patient(patient_id:str, preds):
     # Generic filename
     df_true = pd.read_csv('test_data/patient{}_labels.csv'.format(patient_id))
@@ -127,7 +130,7 @@ def jaccard_index_per_patient(patient_id:str, preds):
     #you have to predict all labels correctly, but you are penalized for any false positive
     return tp / (tp_fn + fp) , preds, df_true['labels'].values
 
-def get_all_jaccard_index( model:Any, label_encoder:Any ,num_patients:int=10, threshold:float=0.95):
+def get_all_jaccard_index( model:Any, label_encoder:Any ,num_patients:int=10, get_all_jaccard_index:float=0.95):
 
     all_jaccard_index = []
     all_pred = []
