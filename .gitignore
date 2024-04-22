@@ -3,5 +3,4 @@
 /training_data/**
 /new_env/**
 training_data/**
-/models/**
 pathogen_detection_EG.ipynb
