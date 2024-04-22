@@ -67,6 +67,9 @@ def get_std_across_labels_by_kmer(kmer_analysis):
 
     return std_accross_labels_sorted
 
+def flatten(original_list:list):
+    return list(chain.from_iterable(original_list))
+
 
 def return_filter_idx(df, filter_namelist):
     return df.X_mapped.columns.get_indexer(filter_namelist)

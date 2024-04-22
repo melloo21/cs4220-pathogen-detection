@@ -30,6 +30,9 @@ def create_label_df(df):
 
     return df, le
 
+def get_label_map(label_encoder):
+    return dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
+
 def read_canonical_kmer_dict(filepath="./training_data/6-mers.json"):
     # Load dictionary that maps k-mer to their corresponding index.
     # A k-mer and its reverse complement are mapped to the same index.
@@ -76,3 +79,12 @@ def open_file(filename:str, filepath:Union[str,None]):
         filename = f"{filepath}/{filename}"
     # Return transform_scale
     return pickle.load(open(filename,'rb'))
+
+def create_new_dataset(labels:pd.DataFrame, dateset:Union[pd.DataFrame, np.array], filtered:Union[str,list]):
+    if isinstance(filtered, str):
+        filter_idx = labels[labels.species_name != filtered].index
+        print(f" filtered for {filtered} : {labels.iloc[labels[labels.species_name != filtered].index].species_name.unique()}")
+        final_labels = labels.copy().iloc[filter_idx]
+        final_dataset = dateset.copy().iloc[filter_idx]
+
+        return pd.concat([final_labels,final_dataset], axis=1)

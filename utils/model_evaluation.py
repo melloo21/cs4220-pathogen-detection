@@ -130,7 +130,7 @@ def jaccard_index_per_patient(patient_id:str, preds):
     #you have to predict all labels correctly, but you are penalized for any false positive
     return tp / (tp_fn + fp) , preds, df_true['labels'].values
 
-def get_all_jaccard_index( model:Any, label_encoder:Any ,num_patients:int=10, get_all_jaccard_index:float=0.95):
+def get_all_jaccard_index( model:Any, label_encoder:Any ,num_patients:int=10, threshold:float=0.95):
 
     all_jaccard_index = []
     all_pred = []
@@ -140,7 +140,7 @@ def get_all_jaccard_index( model:Any, label_encoder:Any ,num_patients:int=10, ge
 
         with open('test_data/patient{}_6mers.npy'.format(patient_id), 'rb') as read_file:
             df_test = np.load(read_file)
-
+        print(f"Shape :: {df_test.shape}")
         # regr.predict relies on argmax, thus predict to every single read and you will end up with many false positives
         y_pred = model.predict(df_test)
 
